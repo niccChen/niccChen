@@ -118,18 +118,18 @@ def draw_scene(img, t):
 
 
 def build_banner():
-    from banff_banner import make_frame
+    from workspace_banner import make_frame
 
     frames=[make_frame(i/10) for i in range(80)]
-    frames[0].save(ASSETS/"banner-banff-light-static.png",optimize=True)
+    frames[0].save(ASSETS/"banner-work-life-static.png",optimize=True)
     palette=frames[0].quantize(colors=192,method=Image.Quantize.MEDIANCUT)
     indexed=[im.quantize(palette=palette,dither=Image.Dither.NONE) for im in frames]
-    indexed[0].save(ASSETS/"banner-banff-light.gif",save_all=True,append_images=indexed[1:],duration=100,loop=0,optimize=True,disposal=1)
+    indexed[0].save(ASSETS/"banner-work-life.gif",save_all=True,append_images=indexed[1:],duration=100,loop=0,optimize=True,disposal=1)
     samples=[frames[i].resize((680,310),Image.Resampling.LANCZOS) for i in [0,26,53,79]]
     contact=Image.new("RGB",(1360,620),"white")
     for i,im in enumerate(samples):contact.paste(im,((i%2)*680,(i//2)*310))
     contact.save(PREVIEW/"banner-contact-sheet.png")
-    print("Banner:", (ASSETS/"banner-banff-light.gif").stat().st_size, "bytes;",len(frames),"frames")
+    print("Banner:", (ASSETS/"banner-work-life.gif").stat().st_size, "bytes;",len(frames),"frames")
 
 
 SKILLS=[
@@ -168,8 +168,8 @@ def build_badges():
 
 def build_readme(widths):
     content='''<picture>
-  <source media="(prefers-reduced-motion: reduce)" srcset="./assets/banner-banff-light-static.png">
-  <img src="./assets/banner-banff-light.gif" alt="Yiyun Chen — Machine Learning & Applied AI — Emory University. Light Banff-inspired pixel mountains, a turquoise lake, and pine trees." width="100%">
+  <source media="(prefers-reduced-motion: reduce)" srcset="./assets/banner-work-life-static.png">
+  <img src="./assets/banner-work-life.gif" alt="Yiyun Chen — Machine Learning & Applied AI — Emory University. A light pixel workspace with a laptop, research notes, coffee, and a plant overlooking Banff-inspired mountains and a turquoise lake." width="100%">
 </picture>
 
 <p align="center">

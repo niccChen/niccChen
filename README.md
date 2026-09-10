@@ -1,6 +1,6 @@
 <picture>
-  <source media="(prefers-reduced-motion: reduce)" srcset="./assets/banner-banff-light-static.png">
-  <img src="./assets/banner-banff-light.gif" alt="Yiyun Chen — Machine Learning & Applied AI — Emory University. Light Banff-inspired pixel mountains, a turquoise lake, and pine trees." width="100%">
+  <source media="(prefers-reduced-motion: reduce)" srcset="./assets/banner-work-life-static.png">
+  <img src="./assets/banner-work-life.gif" alt="Yiyun Chen — Machine Learning & Applied AI — Emory University. A light pixel workspace with a laptop, research notes, coffee, and a plant overlooking Banff-inspired mountains and a turquoise lake." width="100%">
 </picture>
 
 <p align="center">
