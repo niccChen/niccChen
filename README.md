@@ -1,6 +1,6 @@
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="./assets/banner-static.png">
-  <img src="./assets/banner.gif" alt="Yiyun Chen — Machine Learning & Applied AI — Emory University. Pixel artwork of a cat coding by a moonlit window." width="100%">
+  <img src="./assets/banner.gif" alt="Yiyun Chen — Machine Learning & Applied AI — Emory University. Banff-inspired pixel mountains, a turquoise lake, and pine trees." width="100%">
 </picture>
 
 <p align="center">

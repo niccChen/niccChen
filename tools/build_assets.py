@@ -118,13 +118,14 @@ def draw_scene(img, t):
 
 
 def build_banner():
-    base=base_banner()
-    frames=[draw_scene(base.copy(),i/10) for i in range(67)]
+    from banff_banner import make_frame
+
+    frames=[make_frame(i/10) for i in range(80)]
     frames[0].save(ASSETS/"banner-static.png",optimize=True)
     palette=frames[0].quantize(colors=192,method=Image.Quantize.MEDIANCUT)
     indexed=[im.quantize(palette=palette,dither=Image.Dither.NONE) for im in frames]
     indexed[0].save(ASSETS/"banner.gif",save_all=True,append_images=indexed[1:],duration=100,loop=0,optimize=True,disposal=1)
-    samples=[frames[i].resize((680,310),Image.Resampling.LANCZOS) for i in [0,22,44,65]]
+    samples=[frames[i].resize((680,310),Image.Resampling.LANCZOS) for i in [0,26,53,79]]
     contact=Image.new("RGB",(1360,620),"white")
     for i,im in enumerate(samples):contact.paste(im,((i%2)*680,(i//2)*310))
     contact.save(PREVIEW/"banner-contact-sheet.png")
@@ -168,7 +169,7 @@ def build_badges():
 def build_readme(widths):
     content='''<picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="./assets/banner-static.png">
-  <img src="./assets/banner.gif" alt="Yiyun Chen — Machine Learning & Applied AI — Emory University. Pixel artwork of a cat coding by a moonlit window." width="100%">
+  <img src="./assets/banner.gif" alt="Yiyun Chen — Machine Learning & Applied AI — Emory University. Banff-inspired pixel mountains, a turquoise lake, and pine trees." width="100%">
 </picture>
 
 <p align="center">
