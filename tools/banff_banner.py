@@ -3,13 +3,13 @@ import math
 
 from PIL import Image, ImageDraw
 
-from build_assets import SCALE, WIDTH, HEIGHT, FONTS, rect, text, mix
+from build_assets import SCALE, WIDTH, HEIGHT, FONTS, BANNER_SECONDS, RESEARCH_INTERESTS, rect, text, mix
 
 
 def background(t=0):
     art=Image.new("RGB",(340,155))
     d=ImageDraw.Draw(art)
-    phase=math.tau*t/8
+    phase=math.tau*t/BANNER_SECONDS
     for y in range(155):
         d.line((0,y,339,y),fill=mix((226,242,250),(248,252,253),min(1,y/103)))
 
@@ -78,6 +78,27 @@ def background(t=0):
     return art
 
 
+def draw_interest(img, t):
+    """Scroll one pixel-font interest at a time through a clipped text slot."""
+    slot_width, slot_height = 446, 42
+    seconds_per_interest = BANNER_SECONDS / len(RESEARCH_INTERESTS)
+    index = int(t // seconds_per_interest) % len(RESEARCH_INTERESTS)
+    elapsed = t % seconds_per_interest
+    # Hold each keyword for 2.3 s, then roll upward for 0.7 s.
+    progress = max(0.0, (elapsed - (seconds_per_interest - .7)) / .7)
+    shift = round(slot_height * progress * progress * (3 - 2 * progress))
+    layer = Image.new("RGBA", (slot_width*SCALE, slot_height*SCALE))
+    ld = ImageDraw.Draw(layer)
+    text(ld, (0, 7-shift), RESEARCH_INTERESTS[index], FONTS["focus"], "#294c5a")
+    if shift:
+        text(ld, (0, 7+slot_height-shift), RESEARCH_INTERESTS[(index+1) % len(RESEARCH_INTERESTS)],
+             FONTS["focus"], "#294c5a")
+    img.paste(layer, (29*SCALE, 174*SCALE), layer)
+    d = ImageDraw.Draw(img)
+    for i in range(len(RESEARCH_INTERESTS)):
+        rect(d, 29+i*9, 231, 3, 3, "#547f84" if i == index else "#c2d9d6")
+
+
 def make_frame(t):
     img=background(t).resize((WIDTH*SCALE,HEIGHT*SCALE),Image.Resampling.NEAREST)
     # A soft white wash makes the landscape a light background for dark typography.
@@ -95,12 +116,11 @@ def make_frame(t):
     for x,c in [(18,"#91b9b5"),(29,"#b3cdcc"),(40,"#d3e3e5")]:rect(d,x,17,5,5,c)
     text(d,(59,14),"niccChen / GitHub",FONTS["small"],"#617d85")
     text(d,(WIDTH-31,13),"↗",FONTS["small"],"#698e91")
-    text(d,(29,76),"EMORY UNIVERSITY",FONTS["small"],"#5e7c82",1.5)
-    text(d,(32,111),"Yiyun Chen",FONTS["pixel"],"#ffffff")
-    text(d,(29,108),"Yiyun Chen",FONTS["pixel"],"#294c5a")
-    text(d,(29,180),"Machine Learning & Applied AI",FONTS["body"],"#294c5a")
-    text(d,(29,209),"Computer Science · Applied Mathematics",FONTS["small"],"#456873")
+    text(d,(29,69),"EMORY UNIVERSITY",FONTS["small"],"#5e7c82",1.5)
+    text(d,(32,99),"Yiyun Chen",FONTS["pixel"],"#ffffff")
+    text(d,(29,96),"Yiyun Chen",FONTS["pixel"],"#294c5a")
+    text(d,(29,155),"RESEARCH INTERESTS",FONTS["small"],"#5e7c82",.6)
+    draw_interest(img, t)
     text(d,(29,278),"Research · Engineering",FONTS["small"],"#456873")
     text(d,(591,278),"@niccChen",FONTS["small"],"#3d666d")
     return img
-

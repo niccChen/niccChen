@@ -4,13 +4,13 @@ import math
 from PIL import ImageDraw
 
 from banff_banner import make_frame as landscape_frame
-from build_assets import WIDTH, FONTS, rect, text
+from build_assets import WIDTH, FONTS, BANNER_SECONDS, rect, text
 
 
 def make_frame(t):
     img = landscape_frame(t)
     d = ImageDraw.Draw(img)
-    phase = math.tau * t / 8
+    phase = math.tau * t / BANNER_SECONDS
 
     # A broad sill places the landscape outside, and a quiet work corner inside.
     rect(d, 0, 267, WIDTH, 43, "#f1f7f6")
@@ -82,4 +82,3 @@ def make_frame(t):
 
     text(d, (29, 278), "Research · Engineering", FONTS["small"], "#456873")
     return img
-

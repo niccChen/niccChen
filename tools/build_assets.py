@@ -12,6 +12,8 @@ PREVIEW = ROOT / ".preview"
 PREVIEW.mkdir(exist_ok=True)
 SCALE = 2
 WIDTH, HEIGHT = 680, 310
+BANNER_SECONDS = 9
+RESEARCH_INTERESTS = ("Agentic Systems", "NLP", "Probabilistic Forecasting")
 
 
 def font(name, size):
@@ -29,7 +31,8 @@ def font(name, size):
     raise FileNotFoundError(f"Install a font for {name}: {options[name]}")
 
 
-FONTS = {"pixel": font("pixel", 58), "small": font("mono", 11), "body": font("sans", 13)}
+FONTS = {"pixel": font("pixel", 46), "small": font("mono", 11),
+         "body": font("sans", 13), "focus": font("pixel", 32)}
 P = dict(edge="#62608b", frame="#8982ad", sky="#282443", night="#302b4e", moon="#ebe1ff", star="#cec1ee", cloud="#5d5686", desk="#b7a5d2", deskedge="#7e7198", cat="#ded6f0", catshade="#b5a6cd", ear="#a18daf", screen="#20223a", code="#a9d9cf", leaf="#9dbdb9", pot="#d8a7ba")
 
 
@@ -120,12 +123,12 @@ def draw_scene(img, t):
 def build_banner():
     from workspace_banner import make_frame
 
-    frames=[make_frame(i/10) for i in range(80)]
+    frames=[make_frame(i/10) for i in range(BANNER_SECONDS*10)]
     frames[0].save(ASSETS/"banner-work-life-static.png",optimize=True)
     palette=frames[0].quantize(colors=192,method=Image.Quantize.MEDIANCUT)
     indexed=[im.quantize(palette=palette,dither=Image.Dither.NONE) for im in frames]
     indexed[0].save(ASSETS/"banner-work-life.gif",save_all=True,append_images=indexed[1:],duration=100,loop=0,optimize=True,disposal=1)
-    samples=[frames[i].resize((680,310),Image.Resampling.LANCZOS) for i in [0,26,53,79]]
+    samples=[frames[i].resize((680,310),Image.Resampling.LANCZOS) for i in [0,30,60,89]]
     contact=Image.new("RGB",(1360,620),"white")
     for i,im in enumerate(samples):contact.paste(im,((i%2)*680,(i//2)*310))
     contact.save(PREVIEW/"banner-contact-sheet.png")
@@ -134,9 +137,10 @@ def build_banner():
 
 SKILLS=[
     ("Languages",[("Python","python"),("C#","csharp")]),
-    ("ML & vision",[("PyTorch","pytorch"),("OpenCV","opencv"),("SciPy",None),("scikit-image",None)]),
-    ("Data & viz",[("NumPy","numpy"),("pandas","pandas"),("Matplotlib",None),("Jupyter","jupyter")]),
-    ("Engineering",[("RAG",None),("MCP",None),(".NET",None),("Avalonia",None)]),
+    ("AI & NLP",[("PyTorch","pytorch"),("Transformers",None),("RAG",None),("MCP",None)]),
+    ("Data & scientific computing",[("NumPy","numpy"),("pandas","pandas"),("SciPy",None),("PyAMG",None),("Optuna",None)]),
+    ("Vision & visualization",[("OpenCV","opencv"),("scikit-image",None),("Matplotlib",None)]),
+    ("Engineering & tools",[(".NET",None),("Avalonia",None),("Pydantic",None),("Jupyter","jupyter"),("Git",None),("pytest",None)]),
 ]
 NS="http://www.w3.org/2000/svg"
 ET.register_namespace("",NS)
@@ -147,20 +151,20 @@ def slug(label):return label.lower().replace("#","sharp").replace(".","dot").rep
 
 def build_badges():
     widths={}
-    label_font=font("sans",12)
+    label_font=font("sans",14)
     for _,skills in SKILLS:
         for label,icon in skills:
-            width=math.ceil(label_font.getlength(label)/SCALE)+20+(21 if icon else 0)
+            width=math.ceil(label_font.getlength(label)/SCALE)+24+(24 if icon else 0)
             widths[label]=width
-            for theme,background,line,foreground in [("light","#eff7f6","#c9dedb","#456873"),("dark","#20343b","#38535d","#b2d6d5")]:
-                svg=ET.Element(f"{{{NS}}}svg",width=str(width),height="30",viewBox=f"0 0 {width} 30",role="img")
+            for theme,background,line,foreground in [("light","#eff7f6","#bfd8d4","#315661"),("dark","#20343b","#47626b","#c5e5e2")]:
+                svg=ET.Element(f"{{{NS}}}svg",width=str(width),height="36",viewBox=f"0 0 {width} 36",role="img")
                 ET.SubElement(svg,f"{{{NS}}}title").text=label
-                ET.SubElement(svg,f"{{{NS}}}rect",x=".5",y=".5",width=str(width-1),height="29",rx="6",fill=background,stroke=line)
+                ET.SubElement(svg,f"{{{NS}}}rect",x=".5",y=".5",width=str(width-1),height="35",rx="6",fill=background,stroke=line)
                 if icon:
                     source=ET.parse(ASSETS/f"icons/{icon}.svg").getroot()
-                    nested=ET.SubElement(svg,f"{{{NS}}}svg",x="9",y="7.5",width="15",height="15",viewBox=source.get("viewBox","0 0 128 128"))
+                    nested=ET.SubElement(svg,f"{{{NS}}}svg",x="11",y="9",width="18",height="18",viewBox=source.get("viewBox","0 0 128 128"))
                     for child in source:nested.append(deepcopy(child))
-                labelnode=ET.SubElement(svg,f"{{{NS}}}text",x="30" if icon else "10",y="19",fill=foreground,attrib={"font-family":"Arial, Helvetica, sans-serif","font-size":"12"})
+                labelnode=ET.SubElement(svg,f"{{{NS}}}text",x="36" if icon else "12",y="23",fill=foreground,attrib={"font-family":"Arial, Helvetica, sans-serif","font-size":"14"})
                 labelnode.text=label
                 ET.ElementTree(svg).write(ASSETS/f"badges/{slug(label)}-lake-{theme}.svg",encoding="utf-8",xml_declaration=False)
     return widths
@@ -169,7 +173,7 @@ def build_badges():
 def build_readme(widths):
     content='''<picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="./assets/banner-work-life-static.png">
-  <img src="./assets/banner-work-life.gif" alt="Yiyun Chen — Machine Learning & Applied AI — Emory University. A light pixel workspace with a laptop, research notes, coffee, and a plant overlooking Banff-inspired mountains and a turquoise lake." width="100%">
+  <img src="./assets/banner-work-life.gif" alt="Yiyun Chen — Agentic Systems, NLP, and Probabilistic Forecasting — Emory University. A light pixel workspace overlooking Banff-inspired mountains and a turquoise lake." width="100%">
 </picture>
 
 <p align="center">
@@ -182,9 +186,19 @@ def build_readme(widths):
 
 I'm Yiyun (Nicole) Chen, an undergraduate at **Emory University** studying Computer Science and Applied Mathematics & Statistics.
 
-My research interests include **clinical NLP, multimodal reasoning, and probabilistic forecasting**. My applied AI work includes RAG pipelines and document intelligence.
+## 02 / Research interests
 
-## 02 / Technical skills
+My research interests span **agentic systems, natural language processing, and probabilistic forecasting**. I am interested in how agents use tools and structured feedback to solve complex tasks, how language models reason over contextual and clinical information, and how forecasting models represent uncertainty. Across these areas, I aim to connect rigorous evaluation with practical, reliable systems.
+
+| Research area | What I am interested in |
+| --- | --- |
+| **Agentic Systems** | Tool-using agents, structured workflows, and reliable evaluation. |
+| **Natural Language Processing** | Language understanding, clinical text reasoning, and document intelligence. |
+| **Probabilistic Forecasting** | Time-series modeling, uncertainty quantification, and calibrated predictions. |
+
+## 03 / Skills & tools
+
+**Tool Use** · **Structured Outputs** · **Model Evaluation**
 
 <table>
 '''
@@ -192,7 +206,7 @@ My research interests include **clinical NLP, multimodal reasoning, and probabil
         content+=f"  <tr>\n    <td><strong>{category.replace('&','&amp;')}</strong></td>\n    <td>\n"
         for label,_ in skills:
             name=slug(label)
-            content+=f'''      <picture><source media="(prefers-color-scheme: dark)" srcset="./assets/badges/{name}-lake-dark.svg"><img src="./assets/badges/{name}-lake-light.svg" alt="{label}" height="30" width="{widths[label]}"></picture>
+            content+=f'''      <picture><source media="(prefers-color-scheme: dark)" srcset="./assets/badges/{name}-lake-dark.svg"><img src="./assets/badges/{name}-lake-light.svg" alt="{label}" height="36" width="{widths[label]}"></picture>
 '''
         content+="    </td>\n  </tr>\n"
     content+='''</table>
