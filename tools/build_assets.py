@@ -201,13 +201,9 @@ I'm Yiyun (Nicole) Chen, an undergraduate at **Emory University** studying Compu
 
 ## 02 / Research interests
 
-My research interests span **agentic systems, natural language processing, and probabilistic forecasting**. I am interested in how agents use tools and structured feedback to solve complex tasks, how language models reason over contextual and clinical information, and how forecasting models represent uncertainty. Across these areas, I aim to connect rigorous evaluation with practical, reliable systems.
+My research interests lie at the intersection of **statistics and computer science**, with a focus on **AI for healthcare**. Much of my work has centered on **agentic systems, NLP, and retrieval-augmented generation (RAG)**, building workflows that connect language models with retrieval, tool use, and structured feedback. My research experience also includes clinical text analysis and probabilistic disease forecasting, which has shaped my interest in learning from incomplete health records and modeling how health outcomes evolve over time.
 
-| Research area | What I am interested in |
-| --- | --- |
-| **Agentic Systems** | Tool-using agents, structured workflows, and reliable evaluation. |
-| **Natural Language Processing** | Language understanding, clinical text reasoning, and document intelligence. |
-| **Probabilistic Forecasting** | Time-series modeling, uncertainty quantification, and calibrated predictions. |
+Looking ahead, I want to investigate how agents can combine clinical evidence with statistical models to reason and forecast under uncertainty. I am particularly interested in **uncertainty quantification, calibration, and temporal modeling**, alongside the design of agents that retrieve relevant information, select tools, and revise their conclusions when new evidence arrives. I want to evaluate these systems through their predictive performance, the quality of their uncertainty estimates, and how well their conclusions follow from the evidence they use.
 
 ## 03 / Skills & tools
 
