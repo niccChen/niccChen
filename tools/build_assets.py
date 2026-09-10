@@ -150,7 +150,7 @@ def build_banner():
 
 SKILLS=[
     ("Languages",[("Python","python"),("C#","csharp")]),
-    ("AI & NLP",[("PyTorch","pytorch"),("Transformers",None),("RAG",None),("MCP",None)]),
+    ("AI & NLP",[("PyTorch","pytorch"),("Transformers",None),("MCP",None)]),
     ("Data & scientific computing",[("NumPy","numpy"),("pandas","pandas"),("SciPy",None),("PyAMG",None),("Optuna",None)]),
     ("Vision & visualization",[("OpenCV","opencv"),("scikit-image",None),("Matplotlib",None)]),
     ("Engineering & tools",[(".NET",None),("Avalonia",None),("Pydantic",None),("Jupyter","jupyter"),("Git",None),("pytest",None)]),
@@ -201,9 +201,9 @@ I'm Yiyun (Nicole) Chen, an undergraduate at **Emory University** studying Compu
 
 ## 02 / Research interests
 
-My interests center on **agentic systems, natural language processing, and retrieval-augmented generation (RAG)**, particularly how language models use external knowledge, tools, and feedback to solve multi-step tasks. I have built retrieval-based agents for institutional knowledge access and document intelligence, and worked on agentic solver selection for scientific computing and adaptive agents for human–AI cooperation. These experiences have shaped my interest in how agents choose actions, recover from failures, and adapt to the people and environments they work with.
+I am interested in **building AI systems that reason and act reliably under uncertainty**, with healthcare as a central application. My work on **agentic systems** has explored solver selection for scientific computing and adaptation in human–AI collaboration. Across these settings, I am interested in how agents use feedback to revise their decisions, and how their outputs can be verified against task requirements. This connects my work on language-based reasoning and tool use with the statistical questions of when a model is reliable and how that reliability should be measured.
 
-My research in **AI for healthcare** focuses on learning patient states from irregular, partially observed clinical data and building probabilistic models for epidemic forecasting. Alongside this, I study **multicalibration and reliability under distribution shift**, connecting statistical learning with model development and evaluation. Going forward, I want to explore how language models and adaptive agents can work with temporal and probabilistic models to use evolving clinical evidence, quantify uncertainty, and support reliable predictions across patient groups and settings.
+I study these questions through **probabilistic forecasting, patient-state modeling, and multicalibration**. My research includes modeling epidemic trajectories and learning patient representations from irregular, partially observed clinical records, alongside work on calibration across subgroups and under distribution shift. I want to build on this work by exploring how **NLP and adaptive agents** can combine clinical language with temporal models, update as new evidence arrives, and account for uncertainty in their predictions and actions.
 
 ## 03 / Skills & tools
 
