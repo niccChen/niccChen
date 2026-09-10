@@ -152,7 +152,7 @@ def build_badges():
         for label,icon in skills:
             width=math.ceil(label_font.getlength(label)/SCALE)+20+(21 if icon else 0)
             widths[label]=width
-            for theme,background,line,foreground in [("light","#faf9ff","#e6e7ee","#6b5aaa"),("dark","#222533","#333b4c","#c2b4f0")]:
+            for theme,background,line,foreground in [("light","#eff7f6","#c9dedb","#456873"),("dark","#20343b","#38535d","#b2d6d5")]:
                 svg=ET.Element(f"{{{NS}}}svg",width=str(width),height="30",viewBox=f"0 0 {width} 30",role="img")
                 ET.SubElement(svg,f"{{{NS}}}title").text=label
                 ET.SubElement(svg,f"{{{NS}}}rect",x=".5",y=".5",width=str(width-1),height="29",rx="6",fill=background,stroke=line)
@@ -162,7 +162,7 @@ def build_badges():
                     for child in source:nested.append(deepcopy(child))
                 labelnode=ET.SubElement(svg,f"{{{NS}}}text",x="30" if icon else "10",y="19",fill=foreground,attrib={"font-family":"Arial, Helvetica, sans-serif","font-size":"12"})
                 labelnode.text=label
-                ET.ElementTree(svg).write(ASSETS/f"badges/{slug(label)}-{theme}.svg",encoding="utf-8",xml_declaration=False)
+                ET.ElementTree(svg).write(ASSETS/f"badges/{slug(label)}-lake-{theme}.svg",encoding="utf-8",xml_declaration=False)
     return widths
 
 
@@ -192,7 +192,7 @@ My research interests include **clinical NLP, multimodal reasoning, and probabil
         content+=f"  <tr>\n    <td><strong>{category.replace('&','&amp;')}</strong></td>\n    <td>\n"
         for label,_ in skills:
             name=slug(label)
-            content+=f'''      <picture><source media="(prefers-color-scheme: dark)" srcset="./assets/badges/{name}-dark.svg"><img src="./assets/badges/{name}-light.svg" alt="{label}" height="30" width="{widths[label]}"></picture>
+            content+=f'''      <picture><source media="(prefers-color-scheme: dark)" srcset="./assets/badges/{name}-lake-dark.svg"><img src="./assets/badges/{name}-lake-light.svg" alt="{label}" height="30" width="{widths[label]}"></picture>
 '''
         content+="    </td>\n  </tr>\n"
     content+='''</table>
