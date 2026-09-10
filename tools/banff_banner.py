@@ -3,7 +3,9 @@ import math
 
 from PIL import Image, ImageDraw
 
-from build_assets import SCALE, WIDTH, HEIGHT, FONTS, BANNER_SECONDS, RESEARCH_INTERESTS, rect, text, mix
+from build_assets import (SCALE, WIDTH, HEIGHT, FONTS, BANNER_SECONDS, BANNER_MS,
+                          RESEARCH_INTERESTS, INTEREST_DURATIONS_MS, TYPE_CHAR_MS,
+                          DELETE_CHAR_MS, HOLD_MS, rect, text, mix)
 
 
 def background(t=0):
@@ -78,21 +80,36 @@ def background(t=0):
     return art
 
 
+def typing_state(t):
+    """Type, pause, backspace, and move to the next research interest."""
+    elapsed = int(round(t*1000)) % BANNER_MS
+    for index, (word, duration) in enumerate(zip(RESEARCH_INTERESTS, INTEREST_DURATIONS_MS)):
+        if elapsed >= duration:
+            elapsed -= duration
+            continue
+        type_ms = len(word)*TYPE_CHAR_MS
+        delete_end = type_ms + HOLD_MS + len(word)*DELETE_CHAR_MS
+        if elapsed < type_ms:
+            return index, word[:elapsed//TYPE_CHAR_MS], True
+        if elapsed < type_ms + HOLD_MS:
+            return index, word, (elapsed-type_ms)//400 % 2 == 0
+        if elapsed < delete_end:
+            count = len(word)-1-(elapsed-type_ms-HOLD_MS)//DELETE_CHAR_MS
+            return index, word[:count], True
+        return index, "", (elapsed-delete_end)//400 % 2 == 0
+
+
 def draw_interest(img, t):
-    """Scroll one pixel-font interest at a time through a clipped text slot."""
+    """Keep the baseline fixed while pixel letters and a cursor type in place."""
     slot_width, slot_height = 446, 42
-    seconds_per_interest = BANNER_SECONDS / len(RESEARCH_INTERESTS)
-    index = int(t // seconds_per_interest) % len(RESEARCH_INTERESTS)
-    elapsed = t % seconds_per_interest
-    # Hold each keyword for 2.3 s, then roll upward for 0.7 s.
-    progress = max(0.0, (elapsed - (seconds_per_interest - .7)) / .7)
-    shift = round(slot_height * progress * progress * (3 - 2 * progress))
+    index, visible, cursor_on = typing_state(t)
     layer = Image.new("RGBA", (slot_width*SCALE, slot_height*SCALE))
     ld = ImageDraw.Draw(layer)
-    text(ld, (0, 7-shift), RESEARCH_INTERESTS[index], FONTS["focus"], "#294c5a")
-    if shift:
-        text(ld, (0, 7+slot_height-shift), RESEARCH_INTERESTS[(index+1) % len(RESEARCH_INTERESTS)],
-             FONTS["focus"], "#294c5a")
+    if visible:
+        text(ld, (0, 7), visible, FONTS["focus"], "#294c5a")
+    if cursor_on:
+        cursor_x = round(FONTS["focus"].getlength(visible)/SCALE)+5
+        rect(ld, cursor_x, 7, 2, 26, "#294c5a")
     img.paste(layer, (29*SCALE, 174*SCALE), layer)
     d = ImageDraw.Draw(img)
     for i in range(len(RESEARCH_INTERESTS)):

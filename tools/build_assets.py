@@ -12,8 +12,14 @@ PREVIEW = ROOT / ".preview"
 PREVIEW.mkdir(exist_ok=True)
 SCALE = 2
 WIDTH, HEIGHT = 680, 310
-BANNER_SECONDS = 9
 RESEARCH_INTERESTS = ("Agentic Systems", "NLP", "Probabilistic Forecasting")
+FRAME_MS = 50
+TYPE_CHAR_MS, DELETE_CHAR_MS = 100, 50
+HOLD_MS, PAUSE_MS = 1600, 400
+INTEREST_DURATIONS_MS = tuple(len(word)*(TYPE_CHAR_MS+DELETE_CHAR_MS)+HOLD_MS+PAUSE_MS
+                              for word in RESEARCH_INTERESTS)
+BANNER_MS = sum(INTEREST_DURATIONS_MS)
+BANNER_SECONDS = BANNER_MS / 1000
 
 
 def font(name, size):
@@ -123,16 +129,23 @@ def draw_scene(img, t):
 def build_banner():
     from workspace_banner import make_frame
 
-    frames=[make_frame(i/10) for i in range(BANNER_SECONDS*10)]
-    frames[0].save(ASSETS/"banner-work-life-static.png",optimize=True)
+    frames=[make_frame(ms/1000) for ms in range(0,BANNER_MS,FRAME_MS)]
+    # Reduced-motion viewers get a complete keyword instead of the empty cursor.
+    poster_ms=len(RESEARCH_INTERESTS[0])*TYPE_CHAR_MS+200
+    frames[poster_ms//FRAME_MS].save(ASSETS/"banner-work-life-static.png",optimize=True)
     palette=frames[0].quantize(colors=192,method=Image.Quantize.MEDIANCUT)
     indexed=[im.quantize(palette=palette,dither=Image.Dither.NONE) for im in frames]
-    indexed[0].save(ASSETS/"banner-work-life.gif",save_all=True,append_images=indexed[1:],duration=100,loop=0,optimize=True,disposal=1)
-    samples=[frames[i].resize((680,310),Image.Resampling.LANCZOS) for i in [0,30,60,89]]
+    indexed[0].save(ASSETS/"banner-work-life.gif",save_all=True,append_images=indexed[1:],duration=FRAME_MS,loop=0,optimize=True,disposal=1)
+    sample_ms=[500]
+    start_ms=0
+    for word,duration in zip(RESEARCH_INTERESTS,INTEREST_DURATIONS_MS):
+        sample_ms.append(start_ms+len(word)*TYPE_CHAR_MS+200)
+        start_ms+=duration
+    samples=[frames[ms//FRAME_MS].resize((680,310),Image.Resampling.LANCZOS) for ms in sample_ms]
     contact=Image.new("RGB",(1360,620),"white")
     for i,im in enumerate(samples):contact.paste(im,((i%2)*680,(i//2)*310))
     contact.save(PREVIEW/"banner-contact-sheet.png")
-    print("Banner:", (ASSETS/"banner-work-life.gif").stat().st_size, "bytes;",len(frames),"frames")
+    print("Banner:", (ASSETS/"banner-work-life.gif").stat().st_size, "bytes;",len(frames),"source frames;",BANNER_SECONDS,"seconds")
 
 
 SKILLS=[
